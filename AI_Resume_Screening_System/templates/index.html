@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Resume Screening</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+
+  <body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <!-- Help icon with hover tooltip -->
+    <div class="help-wrapper" tabindex="0" aria-label="How to use">
+      <div class="help-icon">?</div>
+
+      <div class="help-tooltip" role="tooltip">
+        <div class="help-tooltip-title">How to use</div>
+
+        <div class="help-step">
+          <div class="help-step-num">1</div>
+          <div class="help-step-text">
+            <strong>Prepare your resume</strong><br />
+            <span>PDF or DOCX format · max 10 MB</span>
+          </div>
+        </div>
+
+        <div class="help-step">
+          <div class="help-step-num">2</div>
+          <div class="help-step-text">
+            <strong>Upload the file</strong><br />
+            <span>Drag & drop or click the upload zone to browse</span>
+          </div>
+        </div>
+
+        <div class="help-step">
+          <div class="help-step-num">3</div>
+          <div class="help-step-text">
+            <strong>Run Screening</strong><br />
+            <span>Click the button — the AI scores your resume instantly</span>
+          </div>
+        </div>
+
+        <div class="help-step">
+          <div class="help-step-num">4</div>
+          <div class="help-step-text">
+            <strong>Review your result</strong><br />
+            <span
+              >See your score, matched skills, and PASS / FAIL decision</span
+            >
+          </div>
+        </div>
+
+        <div class="help-note">
+          ⚠ <b>Requirement:</b> your resume must include at least one OOP
+          language — Python, Java, JavaScript, C++, C#, or PHP.
+        </div>
+      </div>
+    </div>
+
+    <section class="container">
+      <div class="form-box" id="formBox">
+        <div class="logo-mark">
+          <span class="logo-bracket">[</span>
+          <span class="logo-text">AI</span>
+          <span class="logo-bracket">]</span>
+        </div>
+        <h1>Resume Screening</h1>
+        <p class="requirement">
+          <span class="req-icon">▸</span> At least one OOP language required
+          <span class="req-tags"
+            >Python · Java · JavaScript · C++ · C# · PHP</span
+          >
+        </p>
+
+        <form
+          method="POST"
+          enctype="multipart/form-data"
+          onsubmit="showLoading()"
+        >
+          <div class="file-drop-zone" id="dropZone">
+            <div class="drop-icon">⬆</div>
+            <span class="drop-label">Drop your resume here</span>
+            <span class="drop-sub">PDF or DOCX · Max 10MB</span>
+            <input
+              type="file"
+              name="resume"
+              id="fileInput"
+              accept=".pdf,.docx"
+              required
+            />
+          </div>
+          <div class="file-name" id="fileName"></div>
+          <button type="submit" class="submit-btn">
+            <span class="btn-text">Run Screening</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="loading" id="loading">
+        <div class="loader-ring"></div>
+        <p class="loading-text">Analysing Resume<span class="dots"></span></p>
+      </div>
+
+      {% if result %}
+      <div class="result-box show" id="resultBox">
+        <div class="result-header">
+          <div class="result-title">Screening Result</div>
+          <div class="result-badge {{ result.status }}">
+            {% if result.status == 'pass' %}PASS{% else %}FAIL{% endif %}
+          </div>
+        </div>
+
+        <div class="score-ring-wrap">
+          <svg class="score-ring" viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52" />
+            <circle
+              class="ring-fill {{ result.status }}"
+              cx="60"
+              cy="60"
+              r="52"
+              stroke-dasharray="{{ (result.score / 100) * 326.7 }} 326.7"
+              stroke-dashoffset="81.7"
+            />
+          </svg>
+          <div class="score-label">
+            <span class="score-num">{{ result.score }}</span>
+            <span class="score-pct">%</span>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="info-key">01 · Name</span>
+            <span class="info-val">{{ result.name }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">02 · Email</span>
+            <span class="info-val">{{ result.email }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">03 · Phone</span>
+            <span class="info-val">{{ result.phone }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">04 · Skills</span>
+            <span class="info-val skills-val">
+              {% for skill in result.skills %}
+              <span class="skill-chip">{{ skill }}</span>
+              {% endfor %}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">05 · Score</span>
+            <span class="info-val score-val {{ result.status }}"
+              >{{ result.score }}%</span
+            >
+          </div>
+        </div>
+
+        <div class="decision-bar {{ result.status }}">
+          {{ result.decision }}
+        </div>
+
+        <button class="action-btn {{ result.status }}" onclick="closeResult()">
+          {% if result.status == 'pass' %} Proceed to Next Step → {% else %}
+          Close & Exit × {% endif %}
+        </button>
+      </div>
+      {% endif %} {% if duplicate %}
+      <div class="result-box show duplicate-box" id="resultBox">
+        <div class="dup-icon">⚠</div>
+        <h2>Duplicate Resume</h2>
+        <p class="dup-msg">
+          This resume has already been submitted and screened. Each CV can only
+          be submitted once.
+        </p>
+        <button class="action-btn fail" onclick="closeResult()">
+          Go Back ×
+        </button>
+      </div>
+      {% endif %}
+    </section>
+
+    {% if ranking %}
+    <section class="ranking-section">
+      <div class="ranking-header">
+        <h2>Candidate Rankings</h2>
+        <span class="ranking-count">{{ ranking|length }} candidates</span>
+      </div>
+      <div class="ranking-table-wrap">
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Skills Matched</th>
+              <th>Score</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in ranking %}
+            <tr
+              class="rank-row {{ 'pass-row' if r.score >= 60 else 'fail-row' }}"
+            >
+              <td class="rank-num">{{ loop.index }}</td>
+              <td class="rank-name">{{ r.name }}</td>
+              <td class="rank-email">{{ r.email }}</td>
+              <td class="rank-phone">{{ r.phone }}</td>
+              <td class="rank-skills">
+                {% for skill in r.skills.split(', ') %}
+                <span class="skill-chip-sm">{{ skill }}</span>
+                {% endfor %}
+              </td>
+              <td class="rank-score">
+                <div class="mini-bar-wrap">
+                  <div
+                    class="mini-bar {{ 'pass-bar' if r.score >= 60 else 'fail-bar' }}"
+                    style="width: {{ r.score }}%"
+                  ></div>
+                </div>
+                <span class="score-text">{{ r.score }}%</span>
+              </td>
+              <td>
+                <span
+                  class="status-pill {{ 'pass' if r.score >= 60 else 'fail' }}"
+                >
+                  {{ 'PASS' if r.score >= 60 else 'FAIL' }}
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="/static/script.js"></script>
+  </body>
+</html>
