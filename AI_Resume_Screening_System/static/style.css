@@ -697,117 +697,21 @@ h1 {
 
 /* RESPONSIVE */
 @media (max-width: 540px) {
-  .container {
-    padding: 20px 12px;
-    align-items: flex-start;
-  }
-
   .form-box {
-    padding: 24px 16px;
-    border-radius: 12px;
+    padding: 32px 24px;
   }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
   .result-box {
-    padding: 20px 14px;
-    border-radius: 12px;
+    padding: 28px 20px;
   }
-
   .info-row {
     flex-direction: column;
     gap: 6px;
   }
-
   .info-val {
     text-align: left;
   }
-
   .skills-val {
     justify-content: flex-start;
-  }
-
-  .result-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .score-ring-wrap {
-    width: 100px;
-    height: 100px;
-  }
-
-  .score-ring {
-    width: 100px;
-    height: 100px;
-  }
-
-  .score-num {
-    font-size: 24px;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .action-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .ranking-section {
-    padding: 0 12px 60px;
-  }
-
-  .ranking-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .ranking-header h2 {
-    font-size: 1.1rem;
-  }
-
-  .ranking-table thead th,
-  .ranking-table tbody td {
-    padding: 10px 10px;
-    font-size: 11px;
-  }
-
-  .rank-skills {
-    max-width: 120px;
-  }
-
-  .help-tooltip {
-    width: 220px;
-    right: -10px;
-  }
-
-  .help-wrapper {
-    top: 12px;
-    right: 12px;
-  }
-
-  .file-drop-zone {
-    padding: 22px 12px;
-  }
-
-  .drop-label {
-    font-size: 13px;
-  }
-
-  .submit-btn {
-    font-size: 14px;
-    padding: 13px 18px;
-  }
-
-  .mini-bar-wrap {
-    width: 60px;
   }
 }
 
@@ -954,4 +858,5 @@ h1 {
       .help-note b {
         color: var(--accent);
         font-weight: 500;
+
       }
